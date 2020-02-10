@@ -1,0 +1,20 @@
+{
+  "name": "resource-info",
+  "version": "2.0.0",
+  "description": "Harvest resource information per tenant from netbox.",
+  "main": "startup.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.local.mybit.nl/scm/sys/mybit-resourceinfo-2.0.git"
+  },
+  "keywords": [
+    "resource",
+    "info",
+    "mybit"
+  ],
+  "author": "Djamon Staal",
+  "license": "ISC"
+}
