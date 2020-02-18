@@ -1,6 +1,7 @@
 {
   "name": "resource-info",
   "version": "2.0.0",
+  "private": true,
   "description": "Harvest resource information per tenant from netbox.",
   "main": "startup.js",
   "scripts": {
@@ -16,5 +17,12 @@
     "mybit"
   ],
   "author": "Djamon Staal",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "file-system": "^2.2.2",
+    "moment": "^2.24.0",
+    "nodemailer": "^6.4.2",
+    "pdfkit": "^0.11.0"
+  }
 }
