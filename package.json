@@ -1,5 +1,5 @@
 {
-  "name": "resource-info",
+  "name": "virtualisatie-rapport",
   "version": "2.0.0",
   "private": true,
   "description": "Harvest resource information per tenant from netbox.",
@@ -9,20 +9,25 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://bitbucket.local.mybit.nl/scm/sys/mybit-resourceinfo-2.0.git"
+    "url": "ssh://git@bitbucket.local.mybit.nl:7999/sys/virtualisatie-rapport.git"
   },
   "keywords": [
     "resource",
     "info",
     "mybit"
   ],
-  "author": "Djamon Staal",
+  "contibutors": [
+    "Djamon Staal",
+    "Oscar Wieman"
+  ],
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.19.2",
+    "dotenv": "^8.2.0",
     "file-system": "^2.2.2",
     "moment": "^2.24.0",
     "nodemailer": "^6.4.2",
-    "pdfkit": "^0.11.0"
+    "pdfkit": "^0.11.0",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.5"
   }
 }
