@@ -1,39 +1,61 @@
 // Import Modules
 if (process.env.NODE_ENV !== 'production') require('dotenv').config() // use an .env file for configuration in development
-const rp = require('request-promise')
 
-const mailer = require('./handlers/mail')
+const mail = require('./handlers/mail')
+const getData = require('./handlers/netboxdata')
 
-// Load config
+// Check if config is set
 try {
-  // if (!process.env.NODE_ENV) console.log('Please set the NODE_ENV')
   if (!process.env.NETBOX_URI) throw new Error('Please enter the netbox uri.')
   if (!process.env.NETBOX_TOKEN) throw new Error('Please enter the netbox token.')
   if (!process.env.SMTP_SERVER) throw new Error('Please set an smtp server.')
   if (!process.env.SMTP_FROM) throw new Error('Please set a from email address.')
-  if (!process.env.SMTP_TO) throw new Error('Please set some comma seperated email addresses.')
+  if (!process.env.SMTP_TO) throw new Error('Please set some comma separated email addresses.')
 } catch (error) {
   console.error(error)
   console.error('Committing suicide..')
   process.exit()
 }
 
-const getNetboxData = async (path, method) => {
-  const options = { // move to envirioment variable?
-    uri: process.env.NETBOX_URI + path,
-    method: method || 'get',
-    headers: {
-      accept: 'application/json',
-      Authorization: 'Token ' + process.env.NETBOX_TOKEN
-    },
-    json: true // Automatically parses the JSON string in the response
-  }
-  const response = await rp(options)
-  // console.log(response)
-  return response
-}
+// get all tenants
+getData('/tenancy/tenants')
+  .then(function (response) {
+    // make an array for requests that need to take place
+    const tenants = []
+    for (const id in response.results) { // get the tenant id's from the returned object
+      tenants.push(getData('/virtualization/virtual-machines/?limit=500&tenant_id=' + id))
+    }
+    // wait for all results and return them
+    return Promise.allSettled(tenants)
+      .catch((e) => {
+        console.error(e)
+      })
+  })
+  .then(function (results) {
+    // TODO filter out tenants without vm's or implement an api call that figures this out before vm's are requested
 
-// use this function asyncronous
-console.log(getNetboxData('/api/virtualization/virtual-machines/?limit=5', 'get'))
+    console.log(results)
+    // console.log(JSON.stringify(results))
 
-mailer()
+    const vms = results
+    return vms
+  })
+  .then(function (results) {
+    const sorted = {}
+    // TODO sort vm's
+
+    return sorted
+  })
+  .then(function (results) {
+    const attachments = []
+    // TODO Create attachments from results
+
+    return attachments
+  })
+  .then(function (attachments) {
+    // mail(attachments)
+  })
+  .catch((e) => {
+    // TODO send mail with script failures to systeembeheer@mybit.nl
+    console.error(e)
+  })
