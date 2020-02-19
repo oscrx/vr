@@ -10,7 +10,6 @@ try {
   if (!process.env.NETBOX_URI) throw new Error('Please enter the netbox uri.')
   if (!process.env.NETBOX_TOKEN) throw new Error('Please enter the netbox token.')
   if (!process.env.SMTP_SERVER) throw new Error('Please set an smtp server.')
-  if (!process.env.SMTP_PORT) console.log('No smtp port set.')
   if (!process.env.SMTP_FROM) throw new Error('Please set a from email address.')
   if (!process.env.SMTP_TO) throw new Error('Please set some comma seperated email addresses.')
 } catch (error) {

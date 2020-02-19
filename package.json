@@ -5,7 +5,9 @@
   "description": "Harvest resource information per tenant from netbox.",
   "main": "startup.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docker-build": "docker build . -t virtualisatie-rapport",
+    "docker-run": "docker run --env-file .env virtualisatie-rapport"
   },
   "repository": {
     "type": "git",
