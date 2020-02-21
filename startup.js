@@ -69,6 +69,8 @@ getData('/tenancy/tenants')
           }
           data[id].vms = sorted // replace unsorted vm's with sorted vm's
         })
+      } else {
+        delete data[id] // This tenant does not have any vm's so let's delete it
       }
     }
   })
