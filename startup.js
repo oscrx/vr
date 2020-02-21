@@ -17,39 +17,64 @@ try {
   process.exit()
 }
 
+const data = {}
+
 // get all tenants
 getData('/tenancy/tenants')
   .then(function (response) {
     // make an array for requests that need to take place
-    const tenants = []
-    for (const id in response.results) { // get the tenant id's from the returned object
-      tenants.push(getData('/virtualization/virtual-machines/?limit=500&tenant_id=' + id))
-    }
-    // wait for all results and return them
-    return Promise.allSettled(tenants)
+    const requests = []
+    response.results.forEach(function (result) {
+      requests.push(getData('/virtualization/virtual-machines/?limit=666&tenant_id=' + result.id))
+      data[result.id] = result
+    })
+    return Promise.allSettled(requests)
       .catch((e) => {
         console.error(e)
       })
   })
   .then(function (results) {
     // TODO filter out tenants without vm's or implement an api call that figures this out before vm's are requested
-
-    console.log(results)
-    // console.log(JSON.stringify(results))
-
-    const vms = results
-    return vms
+    results.forEach(function (object) {
+      if (object.value.count >= 1) {
+        data[object.value.results[0].tenant.id].vms = object.value.results
+      }
+    })
   })
-  .then(function (results) {
+  .then(function () {
     const sorted = {}
-    // TODO sort vm's
-
-    return sorted
+    for (const id in data) {
+      if (data[id].vms) { // check if tenant has vm's
+        data[id].vms.forEach(function (vm) { // loop over all vm's
+          if (/.*-acc$/.test(vm.name)) { // filter the accept vm's out
+            if (!sorted.accept) {
+              sorted.accept = {}
+            }
+            sorted.accept[vm.id] = vm
+          } else if (/.*-test$/.test(vm.name)) { // filter the test vm's out
+            if (!sorted.testing) {
+              sorted.testing = {}
+            }
+            sorted.testing[vm.id] = vm
+          } else if (/.*-demo$/.test(vm.name)) { // filter the demo vm's out
+            if (!sorted.demo) {
+              sorted.demo = {}
+            }
+            sorted.demo[vm.id] = vm
+          } else { // the rest should be production vm's
+            if (!sorted.production) {
+              sorted.production = {}
+            }
+            sorted.production[vm.id] = vm
+          }
+          data[id].vms = sorted // replace unsorted vm's with sorted vm's
+        })
+      }
+    }
   })
-  .then(function (results) {
+  .then(function () {
     const attachments = []
     // TODO Create attachments from results
-
     return attachments
   })
   .then(function (attachments) {
