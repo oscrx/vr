@@ -1,8 +1,9 @@
 // Import Modules
 if (process.env.NODE_ENV !== 'production') require('dotenv').config() // use an .env file for configuration in development
-
+require('events').EventEmitter.defaultMaxListeners = 100;
 const mail = require('./handlers/mail')
 const getData = require('./handlers/netboxdata')
+const pdfGenerator = require('./handlers/pdf-generator')
 
 // Check if config is set
 try {
@@ -76,10 +77,18 @@ getData('/tenancy/tenants')
   })
   .then(function () {
     const attachments = []
-    // TODO Create attachments from results
-    return attachments
+    for (const id in data) {
+      attachments.push(pdfGenerator(data[id]))
+    }
+
+    return Promise.allSettled(attachments)
+      .catch((e) => {
+        console.error(e)
+      })
+
   })
   .then(function (attachments) {
+    console.log(attachments)
     // mail(attachments)
   })
   .catch((e) => {
