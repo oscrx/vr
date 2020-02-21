@@ -42,9 +42,9 @@ getData('/tenancy/tenants')
     })
   })
   .then(function () {
-    const sorted = {}
     for (const id in data) {
       if (data[id].vms) { // check if tenant has vm's
+        const sorted = {}
         data[id].vms.forEach(function (vm) { // loop over all vm's
           if (/.*-acc$/.test(vm.name)) { // filter the accept vm's out
             if (!sorted.accept) {
