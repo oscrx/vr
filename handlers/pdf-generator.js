@@ -8,7 +8,7 @@ const PdfGenerator = (tenant) => {
   const finalPdf = new Promise((resolve, reject) => {
     const doc = new PDFDocument()
     const buffers = []
-    const fileName = moment().format('YYYYMMDD-') + tenant.slug + '.pdf'
+    const fileName = tenant.slug + moment().format('-YYYYMMDD') + '.pdf'
 
     doc.on('data', buffers.push.bind(buffers))
     doc.on('end', () => {
