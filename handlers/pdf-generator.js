@@ -1,7 +1,7 @@
 // Import Modules
 const moment = require('moment')
 const PDFDocument = require('./pdfkit-tables')
-const {SlaTable, UsageTable} = require('./table-formatting')
+const { SlaTable, UsageTable } = require('./table-formatting')
 moment.locale('nl')
 
 const PdfGenerator = (tenant) => {
@@ -12,6 +12,7 @@ const PdfGenerator = (tenant) => {
 
     doc.on('data', buffers.push.bind(buffers))
     doc.on('end', () => {
+      console.log('Created pdf for: ' + tenant.name)
       const pdfData = {
         filename: fileName,
         content: Buffer.concat(buffers)

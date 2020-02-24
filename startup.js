@@ -19,15 +19,22 @@ try {
   process.exit()
 }
 
-const data = {}
+global.total = { // create place to store total vm resource usage
+  disk: 0,
+  memory: 0,
+  vcpus: 0,
+  network_storage: 0
+}
 
+const data = {}
 // get all tenants
+console.log('Started at ' + Date())
 getData('/tenancy/tenants')
   .then(function (response) {
     // make an array for requests that need to take place
     const requests = []
     response.results.forEach(function (result) {
-      requests.push(getData('/virtualization/virtual-machines/?limit=666&tenant_id=' + result.id))
+      requests.push(getData('/virtualization/virtual-machines/?limit=500&tenant_id=' + result.id))
       data[result.id] = result
     })
     return Promise.allSettled(requests)
@@ -98,14 +105,15 @@ getData('/tenancy/tenants')
 
     return Promise.all(attachments)
       .catch((e) => {
-        // TODO: send mail with script failures to systeembeheer@mybit.nl
+        // TODO: send mail with script failures
         console.error(e)
       })
   })
   .then(function (attachments) {
-    mail(attachments)
+    const text = `Bijgevoegd vind u de maandelijkse rapporten per partner. \n\n Het totale cpu verbruik: ${global.total.vcpus} vCPU's \n Het totale memory verbruik: ${(global.total.memory / 1024).toFixed(0)} GB \n Het totale disk verbruik: ${global.total.disk} GB \n Het totale netwerk storage verbruik: ${global.total.network_storage} TB (WIP) \n\n Met vriendelijke groet, \n MyBit systeembeheer`
+    mail(attachments, text)
   })
   .catch((e) => {
-    // TODO send mail with script failures to systeembeheer@mybit.nl
+    // TODO send mail with script failures
     console.error(e)
   })
