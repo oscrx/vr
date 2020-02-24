@@ -1,6 +1,7 @@
 // Import Modules
 const moment = require('moment')
 const PDFDocument = require('./pdfkit-tables')
+const {SlaTable, UsageTable} = require('./table-formatting')
 moment.locale('nl')
 
 const PdfGenerator = (tenant) => {
