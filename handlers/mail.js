@@ -2,7 +2,7 @@
 const moment = require('moment')
 const nodemailer = require('nodemailer')
 
-const Mailer = (files) => {
+const Mailer = (attachments) => {
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_SERVER,
     port: process.env.SMTP_PORT || 25,
@@ -19,7 +19,8 @@ const Mailer = (files) => {
     to: process.env.SMTP_TO, // list of receivers
     subject: 'Virtualisatie Rapport - ' + moment().format('DD MMMM YYYY'), // Subject line
     text: 'Hello world?', // plain text body
-    html: '<b>Hello world?</b>' // html body
+    html: '<b>Hello world?</b>', // html body
+    attachments: attachments // pdf attachments
   })
 }
 

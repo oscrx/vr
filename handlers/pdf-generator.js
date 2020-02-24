@@ -1,16 +1,20 @@
 // Import Modules
 const moment = require('moment')
 const PDFDocument = require('./pdfkit-tables')
-const doc = new PDFDocument()
 moment.locale('nl')
 
 const PdfGenerator = (tenant) => {
   const finalPdf = new Promise((resolve, reject) => {
+    const doc = new PDFDocument()
     const buffers = []
+    const fileName = moment().format('YYYYMMDD-') + tenant.slug + '.pdf'
 
     doc.on('data', buffers.push.bind(buffers))
     doc.on('end', () => {
-      const pdfData = Buffer.concat(buffers)
+      const pdfData = {
+        filename: fileName,
+        content: Buffer.concat(buffers)
+      }
       resolve(pdfData)
     })
 
@@ -32,7 +36,7 @@ const PdfGenerator = (tenant) => {
 
     doc.fontSize(12)
     doc.fillColor('black')
-    doc.text('Partner: Photo-Motion', 49, 140)
+    doc.text('Partner: ' + tenant.name, 49, 140)
     doc.text('Gemaakt op: ' + moment().format('DD MMMM YYYY'), 49, 155)
 
     doc.fontSize(16)

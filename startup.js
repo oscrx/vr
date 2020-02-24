@@ -81,15 +81,14 @@ getData('/tenancy/tenants')
       attachments.push(pdfGenerator(data[id]))
     }
 
-    return Promise.allSettled(attachments)
+    return Promise.all(attachments)
       .catch((e) => {
+        // TODO: send mail with script failures to systeembeheer@mybit.nl
         console.error(e)
       })
-
   })
   .then(function (attachments) {
-    console.log(attachments)
-    // mail(attachments)
+    mail(attachments)
   })
   .catch((e) => {
     // TODO send mail with script failures to systeembeheer@mybit.nl
