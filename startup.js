@@ -104,7 +104,6 @@ getData('/tenancy/tenants')
   })
   .then(function (attachments) {
     mail(attachments)
-    console.log('mailed')
   })
   .catch((e) => {
     // TODO send mail with script failures to systeembeheer@mybit.nl
