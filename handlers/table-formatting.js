@@ -10,7 +10,7 @@ const SlaTable = (tenant) => {
       sla[env]['disk'] += tenant.vms[env][id]['disk']
       sla[env]['vcpus'] += tenant.vms[env][id]['vcpus']
       sla[env]['memory'] += tenant.vms[env][id]['memory']
-      sla[env]['network-storage'] += tenant.vms[env][id]['network-storage']
+      sla[env]['network-storage'] += tenant.vms[env][id]['network-storage'] || 0
     }
     if (env == 'production') {
       formatSla.push([
