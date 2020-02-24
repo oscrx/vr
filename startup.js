@@ -1,6 +1,7 @@
 // Import Modules
 if (process.env.NODE_ENV !== 'production') require('dotenv').config() // use an .env file for configuration in development
-require('events').EventEmitter.defaultMaxListeners = 100;
+require('events').EventEmitter.defaultMaxListeners = 100
+const image = require('image-data-uri')
 const mail = require('./handlers/mail')
 const getData = require('./handlers/netboxdata')
 const pdfGenerator = require('./handlers/pdf-generator')
@@ -76,6 +77,20 @@ getData('/tenancy/tenants')
     }
   })
   .then(function () {
+    const logos = []
+    for (const id in data) {
+      logos.push(image.encodeFromURL(data[id].custom_fields.logo) // download logo's and format them as data uri's
+        .then(result => {
+          data[id].logo = result
+        })
+      )
+    }
+    return Promise.allSettled(logos) // ignores rejected promises, debug missing logos in the pdf here
+      .catch((e) => {
+        console.error(e)
+      })
+  })
+  .then(function () {
     const attachments = []
     for (const id in data) {
       attachments.push(pdfGenerator(data[id]))
@@ -89,6 +104,7 @@ getData('/tenancy/tenants')
   })
   .then(function (attachments) {
     mail(attachments)
+    console.log('mailed')
   })
   .catch((e) => {
     // TODO send mail with script failures to systeembeheer@mybit.nl
